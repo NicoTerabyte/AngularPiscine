@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Third exercise</title>
+		<style>
+
+			html, body
+			{
+				height: 100%;
+				margin: 0;
+				padding: 0;
+			}
+			/* Table styles */
+			.table-container
+			{
+				display: table;
+				width: 100%;
+				height: 100%;
+				/* table-layout: fixed; */
+			}
+			th
+			{
+				height: 100%;
+			}
+			/* columns style */
+			.column
+			{
+				display: table-cell;
+				width: 50%;
+				height: 100%;
+				/* height: 85px; */
+				/* padding: 70px; */
+				vertical-align: middle;
+				border: 2px solid #ccc;
+
+
+			}
+			.column:first-child
+			{
+				text-align: left;
+				background-color: green;
+			}
+			.column:nth-child(2)
+			{
+				background-color: red;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="table-container">
+			<!-- Prima colonna -->
+			<div class="column">
+				Contenuto della prima colonna
+			</div>
+
+			<!-- Seconda colonna -->
+			<div class="column">
+				Contenuto della seconda colonna
+			</div>
+		</div>
+		<div class="table-container">
+			<!-- Prima colonna -->
+			<div class="column">
+				Contenuto della prima colonna nella seconda tabella
+			</div>
+			<!-- Seconda colonna -->
+			<div class="column">
+				Contenuto della seconda colonna nella seconda tabella
+			</div>
+	</body>
+</html>
