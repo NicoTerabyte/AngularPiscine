@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="card.css">
+	<title>Document</title>
+	<script>
+		function fbiondoImg()
+		{
+			document.getElementById('imageLnico').src='fbiondo.jpg';
+			this.src = "fbiondo.jpg";
+		}
+		function fbiondoTxt()
+		{
+			var text = document.getElementById('name');
+			text.innerHTML = 'Flavio Biondo';
+		}
+	</script>
+</head>
+<body>
+	<div class="card">
+		<img class="img" src="lnicoter.jpg" id="imageLnico">
+		<h1 id="name">Lorenzo Nicotera</h1>
+		<p class="title">Front end developer</p>
+		<p>42Roma Student</p>
+		<div class="button-container">
+			<button onclick="fbiondoTxt()">Change name</button>
+			<button onclick="fbiondoImg()">Change image</button>
+		</div>
+	</div>
+</body>
+</html>
+
