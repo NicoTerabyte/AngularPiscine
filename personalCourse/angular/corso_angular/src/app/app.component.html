@@ -1,7 +1,47 @@
 <!-- richiamo il metodo sviluppato nel file ts e ne usufruisco -->
-<button mat-raised-button color="primary" (click)="onClick($event)">Primary</button>
+<!-- <button mat-raised-button color="primary" (click)="onClick($event)">Testing</button>
 <mat-form-field class="example-full-width">
-    <mat-label>Favorite food</mat-label>
-    <input matInput placeholder="Ex. Pizza" [(ngModel)]="title">
+	<mat-label>Favorite food</mat-label>
+	<input matInput placeholder="Ex. Pizza" [(ngModel)]="title">
 </mat-form-field>
-<p>{{title}}</p>
+<p>{{title}}</p> -->
+<!-- <ng-template *ngIf="isVisible; then bloccoIf else bloccoElse"></ng-template>
+<ng-template #bloccoIf>
+	<p>Cacando</p>
+</ng-template>
+<ng-template #bloccoElse>
+	<p>Non sono più visibile</p>
+</ng-template> -->
+
+<ul>
+	<li *ngFor="let persona of persone; index as i">
+		<span [ngClass]="{'online': persona.isOnline, 'offline': !persona.isOnline}" class="status-indicator"></span>
+		{{persona.nome}} - {{persona.cognome}}
+	</li>
+</ul>
+
+<div [ngSwitch]="numeroSwitch">
+	<p *ngSwitchCase="1">uno</p>
+	<p *ngSwitchCase="2">due</p>
+	<p *ngSwitchCase="3">tre</p>
+	<p *ngSwitchCase="4">quattro</p>
+	<p *ngSwitchCase="5">cinque</p>
+	<p *ngSwitchDefault>default</p>
+</div>
+
+<!-- NgStyle part -->
+<ul>
+	<li *ngFor="let persona of persone; index as i">
+		<div class="cerchio" [ngStyle]="{'background': persona.isOnline ? 'green':'red'}"></div>
+		{{persona.nome}} - {{persona.cognome}}
+	</li>
+</ul>
+
+<!-- ngClass part -->
+<ul>
+	<li *ngFor="let persona of persone; index as i">
+		<!-- <div class="cerchio" [ngClass]="{'cerchioOnline': persona.isOnline, 'cerchioOffline': !persona.isOnline}">i</div> -->
+		<div class="cerchio" [ngClass]="persona.isOnline ? 'cerchioOnline':'cerchioOffline'">i</div>
+		{{persona.nome}} - {{persona.cognome}}
+	</li>
+</ul>

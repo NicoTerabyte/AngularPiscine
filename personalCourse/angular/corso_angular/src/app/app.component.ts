@@ -7,6 +7,15 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'corso_angular';
+  isVisible = false
+  numeroSwitch = 3
+  persone = [
+    {nome: "Luca", cognome: "Rossi", isOnline: true},
+    {nome: "Maria", cognome: "Verdi", isOnline: false},
+    {nome: "Lorenzo", cognome: "Nicotera", isOnline: true},
+    {nome: "Giuseppe", cognome: "Nicotera", isOnline: false},
+    {nome: "Carlo", cognome: "Pierangeli", isOnline: true},
+  ]
 
   //questo metodo si collegherà a app.component.html
   onInput(event: Event)
@@ -23,5 +32,14 @@ export class AppComponent {
   onClick(event: Event)
   {
     this.title = 'Ho cliccato il bottone'
+    if (this.isVisible)
+      this.isVisible = false
+    else
+      this.isVisible = true
+  }
+
+  getColor()
+  {
+    return 'green'
   }
 }
