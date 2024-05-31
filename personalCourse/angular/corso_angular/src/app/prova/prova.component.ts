@@ -1,4 +1,5 @@
-import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, Component, DoCheck, OnDestroy, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, Component, DoCheck, OnDestroy, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+// import { EventEmitter } from 'node:stream';
 
 @Component({
   selector: 'app-prova',
@@ -7,20 +8,30 @@ import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit,
 })
 export class ProvaComponent implements OnInit, OnChanges{
 
+  //this works to retrieve data from another component or file
   @Input() data: any;
-
+  @Output() mandaDatiEvento = new EventEmitter<string>()
+  //variabile del figlio che faremo arrivare al padre
+  nome = "luca"
   constructor()
   {
     console.log("costruttore")
   }
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log("changes");
+  //remember changes king
+  ngOnChanges(changes: SimpleChanges): void
+  {
+    console.log("I'll keep track of the changes made when data changes")
+    console.log(this.data)
   }
   ngOnInit(): void
   {
     console.log(this.data)
   }
-
+  //funzione che ci permette di mandare il dato in output
+  mandaDati()
+  {
+    this.mandaDatiEvento.emit(this.nome)
+  }
 }
 
 

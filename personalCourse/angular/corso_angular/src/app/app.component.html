@@ -1,11 +1,25 @@
+
+
+
+<!--
+	Episodio 19
+ -->
+<input #inputSaluti value="valore">
+<button (click)="onClickTemp"></button>
+<!--
+	episodio 18
+ -->
+ <!-- riceviamo i dati dell'evento grazie alla variabile Output nella classe figlio -->
+<!-- <app-prova (mandaDatiEvento)="riceviDatiEvento($event)"></app-prova> -->
+
+
 <!--
 	episodio 17
  -->
 
 <!-- colleghiamo i componenti -->
-<app-prova [data]="persone"></app-prova>
-<button (click)="onClick()">Cambia</button>
-
+<!-- <app-prova [data]="persone"></app-prova>
+<button (click)="onClick()">Cambia il gioco</button> -->
 
 
 
@@ -26,7 +40,7 @@ per la precisione l'ultima lezione sarebbe ngClass (guarda documento 'appuntiAng
 	<p>Non sono più visibile</p>
 </ng-template> -->
 
-<!-- <ul>	
+<!-- <ul>
 	<li *ngFor="let persona of persone; index as i">
 		<span [ngClass]="{'online': persona.isOnline, 'offline': !persona.isOnline}" class="status-indicator"></span>
 		{{persona.nome}} - {{persona.cognome}}

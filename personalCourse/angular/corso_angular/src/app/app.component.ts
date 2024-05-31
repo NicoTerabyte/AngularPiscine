@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent {
-  title = 'corso_angular';
+export class AppComponent implements OnInit, AfterViewInit{
+  //decoratore per templates
+  @ViewChild('inputSaluti') valoreInput!: ElementRef<HTMLInputElement>
 
+  title = 'corso_angular';
   persone = [
     {nome: "Luca", cognome: "Rossi", isOnline: true},
     {nome: "Maria", cognome: "Verdi", isOnline: false},
@@ -25,6 +27,27 @@ export class AppComponent {
       {nome: "Brian", cognome: "Nicotera", isOnline: false},
       {nome: "Daniel", cognome: "Ricchione", isOnline: true},
     ]
+  }
+  riceviDatiEvento(value: string)
+  {
+    console.log(value)
+  }
+  ngOnInit(): void
+  {
+    console.log(this.valoreInput)
+  }
+  //ci serve per poter utilizzare il template
+  //perché di sopra è stato solamente inizializzato
+  ngAfterViewInit(): void
+  {
+    console.log(this.valoreInput)
+  }
+  onClickTemp(): void
+  {
+    //questo solo per stampare il valore effettivo del template
+    //anche perché la struttura sarebbe così:
+    //ElementRef->NativeElement->Value Quindi il valore non lo prendi così
+    console.log(this.valoreInput.nativeElement.value);
   }
 }
 

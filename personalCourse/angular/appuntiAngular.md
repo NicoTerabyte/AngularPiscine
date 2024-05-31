@@ -268,3 +268,73 @@ Quindi con input prendiamo tutti i possibili dati grazie al tag personalizzato c
 da notare che abbiamo usfruito del **property binding** per riuscire a prendere i dati dalla lista di persone.
 
 esercizio: rifare tutto da capo, prova brother
+
+## Passare dati da componente Child al Parent
+Faremo il contrario di quello che abbiamo fatto prima. dobbiamo prendere una variabile dal figlio e farlo andare al padre, cioè l'altro componente.
+A quanto pare serve usar un altro datasBinding per riuscire a passare questi dati, i componenti devono **uscire dal componente figlio** come escono?	con il decoratore **output**
+Il modo per farli comunicare sarebbe quello di utilzzare degli eventi per mandare in output, usando il sistema di output, al padre e poi riceverlo per capire:
+parte del figlio che crea una variabile output di tipo stringa e un metodo per mandarlo al padre:
+```typescript
+@Output() mandaDatiEvento = new EventEmitter<string>()
+mandaDati()
+  {
+    this.mandaDatiEvento.emit(this.nome)
+  }
+
+
+//parte html
+<button (click)="mandaDati()">Manda i dati al padre</button>
+```
+Padre che utilizza la variabile output del figlio per ricevere il dato e utilizza anche un suo metodo per elaborarla:
+```typescript
+riceviDatiEvento(value: string)
+  {
+    console.log(value)
+  }
+
+//parte html
+ <!-- riceviamo i dati dell'evento grazie alla variabile Output nella classe figlio -->
+<app-prova (mandaDatiEvento)="riceviDatiEvento($event)"></app-prova>
+
+	
+```
+da parente a child si usa il property binding, da child a parent utilizzate l'event binding
+
+## Le variabili template
+Prenderemo le famose variabili template, quelle con #, che funzionano solo con angular per utilizzarle con typescript.
+Per manipolare e usufruire dei template di Angular con ts, utilizziremo il decoratore "@Viewchild("nomeTemplate")"
+E dice che ha un figlio nella view, parliamo di un elemento visibile all'utente che è dentro il componente.
+Un figlio della view che si chiama InputSaluti nel mio caso.
+Per definire la variabilre del decoratore potremmo banalmente usare any, ma ci viene suggerito di usare come specificatore, il definitore "ElementRef" questo perché così quando cercheremo il valore effettivo all'interno della variabile template, con l'autocompilazione il computer sa che questa variabile possiede un **NativeElement** al suo interno che è l'unico modo per reperire il value effettivo, visto che il type any **non ha** un nativeElement. la variabile dev'essere anche inizializzata o **assicurata** di non essere mai di valore NULL, per fare ciò ci basta inserire davanti al nome della variabile il punto esclamativo
+```typescript
+@ViewChild('inputSaluti') valoreInput!: ElementRef
+```
+
+Sappi che lavora bene con l'intefaccia "AfterVfiewInit" che ci permette di vedere se il template è stato realmente inizializzato.
+Parte di codice che utilizza il afterview:
+```typescript
+  ngAfterViewInit(): void
+  {
+    console.log(this.valoreInput)
+  } 
+```
+
+Però così si stampa il valore **Effettivo** della variabile template
+ ```typescript
+  onClickTemp(): void
+  {
+    //questo solo per stampare il valore effettivo del template
+    //anche perché la struttura sarebbe così:
+    //ElementRef->NativeElement->Value Quindi il valore non lo prendi così
+    console.log(this.valoreInput.nativeElement.value);
+  }
+
+
+  //parte html
+<input #inputSaluti value="valore">
+<button (click)="onClickTemp"></button>
+```
+ricorda typescript più sei specifico più ti aiuta, infatti abbiamo specificato ancora di più la variabile viewchild così ci aiuterà di più il compilatore
+```typescript
+@ViewChild('inputSaluti') valoreInput!: ElementRef<HTMLInputElement>
+```
