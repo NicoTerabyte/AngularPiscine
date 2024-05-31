@@ -1,4 +1,14 @@
-<mat-card class="example-card">
+<div *ngFor="let persona of data;">
+	<p>{{persona.nome}} - {{persona.cognome}}</p>
+</div>
+
+
+
+
+
+
+<!-- usato nelle lezioni precedenti -->
+<!-- <mat-card class="example-card">
 	<mat-card-header>
 	  <mat-card-title>{{cani[0].nome.toLocaleUpperCase()}}</mat-card-title>
 	  <mat-card-subtitle>{{cani[0].razza}}</mat-card-subtitle>
@@ -11,4 +21,4 @@
 	  <button mat-button>LIKE</button>
 	  <button mat-button>SHARE</button>
 	</mat-card-actions>
-  </mat-card>
+  </mat-card> -->

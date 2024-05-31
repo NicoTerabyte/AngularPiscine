@@ -257,3 +257,14 @@ Anziché cambiare lo stile a mano con ngStyle possiamo cambiare banalmente la cl
 Si possono anche usari gli operatori ternari per gestire le condizioni
 
 ## Passare dei dati dal componente parent al child
+L'obiettivo è accedere ad un componente presente in un altro componente, per riuscire ad usare le sue caratteristiche.
+Per ora pare che per riuscire nel passaggio di dati, ci sia bisogno di dichiarare il decoratore Input, nota per dichiararlo in maniera pulita nel codice ts, bisogna prima inserirlo nei valori di input.
+Viene usato per dichiarare una variabile, con input angular sa che i valori che entrreranno nella variabile arriveranno da fuori.
+Quindi con input prendiamo tutti i possibili dati grazie al tag personalizzato component, infatti qui prendiamo dall'altro file ts i dati che verranno inseriti in data
+```html
+<app-prova [data]="persone"></app-prova>
+```
+
+da notare che abbiamo usfruito del **property binding** per riuscire a prendere i dati dalla lista di persone.
+
+esercizio: rifare tutto da capo, prova brother
