@@ -338,3 +338,6 @@ ricorda typescript più sei specifico più ti aiuta, infatti abbiamo specificato
 ```typescript
 @ViewChild('inputSaluti') valoreInput!: ElementRef<HTMLInputElement>
 ```
+
+## Creare delle direttive
+Utilizzando angular CLI che sarebbero i comandi da terminale, noi creiamo la nostra direttiva
