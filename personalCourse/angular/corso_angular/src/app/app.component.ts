@@ -1,25 +1,33 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ServiceProvaService } from './services/service-prova.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit, AfterViewInit{
+export class AppComponent implements OnInit{
   //decoratore per templates
   @ViewChild('inputSaluti') valoreInput!: ElementRef<HTMLInputElement>
-
   title = 'corso_angular';
-  persone = [
-    {nome: "Luca", cognome: "Rossi", isOnline: true},
-    {nome: "Maria", cognome: "Verdi", isOnline: false},
-    {nome: "Lorenzo", cognome: "Nicotera", isOnline: true},
-    {nome: "Giuseppe", cognome: "Nicotera", isOnline: false},
-    {nome: "Carlo", cognome: "Pierangeli", isOnline: true},
-  ]
+  today = Date.now()
+  val = 7
 
-  onClick()
+  constructor(private serviceTest: ServiceProvaService)
+  {}
+  ngOnInit(): void
   {
+    console.log(`this is the app component version of printing the service`)
+    console.log(this.serviceTest.persone)
+  }
+
+
+}
+
+
+/*
+ onClick()
+ {
     this.persone = [
       {nome: "Carlo", cognome: "1000111100101", isOnline: true},
       {nome: "Spelargo", cognome: "gianpieri", isOnline: false},
@@ -28,47 +36,52 @@ export class AppComponent implements OnInit, AfterViewInit{
       {nome: "Daniel", cognome: "Ricchione", isOnline: true},
     ]
   }
-  riceviDatiEvento(value: string)
-  {
-    console.log(value)
-  }
-  ngOnInit(): void
-  {
-    console.log(this.valoreInput)
-  }
-  //ci serve per poter utilizzare il template
+//ci serve per poter utilizzare il template
   //perché di sopra è stato solamente inizializzato
   ngAfterViewInit(): void
   {
     console.log(this.valoreInput)
   }
-  onClickTemp(): void
-  {
-    //questo solo per stampare il valore effettivo del template
-    //anche perché la struttura sarebbe così:
-    //ElementRef->NativeElement->Value Quindi il valore non lo prendi così
-    console.log(this.valoreInput.nativeElement.value);
-  }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//attributi/metodi extra della classe usata per le lezioni precedenti
+/*
+  colore = 'purple'
+
+onClickTemp(): void
+{
+  //questo solo per stampare il valore effettivo del template
+  //anche perché la struttura sarebbe così:
+  //ElementRef->NativeElement->Value Quindi il valore non lo prendi così
+  console.log(this.valoreInput.nativeElement.value);
+}
+cambiaColoreEvidenziatore(colore: string)
+{
+  this.colore = colore
+}
+
+riceviDatiEvento(value: string)
+{
+  console.log(value)
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//attributi extra della classe usata per le lezioni precedenti
+*/
 //da inserire per spiegare la lezione ngClass
 // //questo metodo si collegherà a app.component.html
 // onInput(event: Event)

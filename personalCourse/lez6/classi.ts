@@ -102,3 +102,4 @@ module lez6
 
 	Preside.getInstance().presenta()
 }
+

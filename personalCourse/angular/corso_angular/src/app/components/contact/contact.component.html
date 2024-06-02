@@ -1,0 +1,9 @@
+<div *ngIf="!isProfile; else profiloContatto">
+	<p>lista contatti</p>
+	<div *ngFor="let persona of persone">
+		<p>{{persona.nome}} - {{persona.cognome}}</p>
+	</div>
+</div>
+<ng-template  #profiloContatto>
+	<p>profilo di pierone</p>
+</ng-template>

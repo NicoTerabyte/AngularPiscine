@@ -340,4 +340,161 @@ ricorda typescript più sei specifico più ti aiuta, infatti abbiamo specificato
 ```
 
 ## Creare delle direttive
-Utilizzando angular CLI che sarebbero i comandi da terminale, noi creiamo la nostra direttiva
+Utilizzando angular CLI che sarebbero i comandi da terminale, noi creiamo la nostra direttiva utilizzando il comando "ng g d highlight" che in versione integrale sarebbe "ng generate directive".
+Per essere definita come direttiva essa sarà provvista del decoratore 	"@Directive" nel suo file typescript.
+dopo averla dichiarata e aver fatto il costruttore
+```typescript
+import { Directive, ElementRef } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+
+  constructor(private element: ElementRef)
+  {
+    this.element.nativeElement.style.backgroundColor = 'yellow'
+  }
+
+}
+
+```
+Andiamo a chiamare la direttiva nel tag paragrafo nel file principale, che sarebbe app.component.html
+```html
+<!-- Inseriamo la direttiva nel tag del paragrafo -->
+<p appHighlight>ciao sono un paragrafo</p>
+```
+E il paragrafo avrà tutti gli attributi assegnati alla direttiva, che siano metodi, variabili ecc…
+Pare che il binding delle variabili con i selettori non sia così scontato. da quanto ho capito, per fare iol binding correttamente usando il decoratore Input per far andare al figlio, che è una direttivva, il valore del padre, bisogna chiamare la variabile con lo stesso nome del selettore presente nella direttiva.
+Per capire meglio faccio vedere il codice
+```typescript
+//codice della direttiva
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+  //notare come la direttiva abbia lo stesso nome del selettore
+  @Input() appHighlight = ''
+}
+
+
+//property binding applicata nel app.component.html
+<p [appHighlight]="colore">ciao sono un paragrafo</p>
+```
+se usassimo altre proprietà create nella nostra direttiva, il nome della variabile non importerebbe, è solo la prima variabile della direttiva che **dovrebbe essere** uguale al nome del selettore
+
+## Le funzioni pipe
+Le pipes sono delle funzioni che possiamo utilizzare all'interno delle espressioni stringa (string interpolation).
+La pipe per aggiungere modifiche sul momento ad un valore presente nella classe ts, quindi quando usiamo la string interpolation {{}}
+Puoi anche direttamente formattare le date con le pipe e sulla documentazione puoi vedere come formattarla cercando tipo pipe date format.
+la decimal pipe ci permette di inserire i decimali si usa con number
+La percentage pipe funziona uguale alla decimal si usa con percent
+La currency pipe serve per mostrare i valori con vicino un valore monetario di una variabile number.
+Pipe showcase:
+```html
+<p>Ciao benvenuti al {{title | uppercase}}</p>
+<p>Oggi che giorno è: {{today | date}}</p>
+<p>Oggi che giorno è: {{today | date:'medium'}}</p>
+<p>Oggi che giorno è: {{today | date:'d MMM yyyy - h:mm:ss'}}</p>
+<!-- i valori dei decimali definiscono quante cifre intere ci stano 1
+e quante decimali 1, però il - vicino al numero di decimali definisce
+quante massimo ce ne possono stare (quindi massimo 4 cifre decimali)
+la stessa cosa si può applicare con il numero di cifre per un numero intero -->
+<p>decimal pipe showcase: {{val | number:'1.1-4'}}</p>
+<p>decimal pipe showcase: {{val | percent:'1.0-4'}}</p>
+<p>decimal pipe showcase: {{val | currency:'EUR':'code'}}</p>
+```
+
+## Cosa sono i service
+Perché li usiamo? Loro sono al di fuori dell'applicazione e ci permettono di comunicare con chiunque in modo trasversale. La seconda motivazione è che i componenti devono limitarsi a mostrare a schermo cose, e non dovrebbero avere al loro interno logica che sarebbero delegati ai services, tipo determinati dati che potrebbero servire a tutta l'applicazione, i dati più importanti per esempio dovrebbero essere inseriti sopratutto nei services, l'obiettivo utlimo del componente è mandare a schermo roba.
+Utilizzeremo un nuovo comando generate per creare un nuovo service.
+Useremo: ng g s nomeServizio
+La s sta per service. 
+Il suo import possiede il decoratore @Injectable iniettabile, il che significa che noi possiamo "iniettare" il nostro service in giro, visto che esso viene inserito all'interno di altri componenti, viene inniettato nel nostro component.
+Per capire la struttura del service:
+```typescript
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ServiceProvaService {
+
+  constructor() { }
+}
+
+```
+
+Dove providedIn sarebbe da dov'è che è disposizione, nella root significa che chiuque può chiamare questo servizio, però questo significa anche che potremmo cambiare il providedIn per renderlo disponibile solo a determinati componenti.
+Ricorda, un servizio è definito tale solamente se è @Injectable.
+**Piccola nota** app.modules.ts possiede una sezione chiamata, providers, suona familiare? Si perché è li che possiamo definire i servizi di cui usufruire se non definiti nella classe, in più c'è la definizione root quindi non serve proprio definirlo anche in app modules.
+Il service è il cervello del programma, più service significa più compiti ben disposti, i componenti sfruttano i service per usufruire della loro logica.
+Banalmente per utilizzare un servizio in un altro componente basta, per esempio nel costruttore, dichiararlo definendo il tipo con il nome della classe service
+Esempio nel componente di prova:
+```typescript
+  constructor(provaService: ServiceProvaService)
+  {
+    console.log("costruttore")
+  }
+```
+
+Ma perché l'abbiamo dichiarato direttamente nel costruttore? Perché è come la classica classe typescript ha la stessa definizione e può essere richimata per costruiew in questo caso quest'altra classe avendo una variabile di quel tipo.
+
+comunque il service è davvero comodo ed è praticamente la parte di programmazione dietro all'elaborazione dati
+
+## Cambiare pagina con il routing
+è la capacità di spostarci da una pagina all'altra, o mostrare un componente invecfe che un altro, almeno con angular, visto che angular è un'applicazione single page.
+Di norma il file di routing.ts viene creato quando crei il progetto angular, all'inizio, però nel caso dovessimo generarlo si può digitare il comando:
+ng g m app-routing --flat --module=app
+
+La parte importante di questo modulo è la sua possibilità di inserire dei percorsi e componenti grazie all'array di oggetti predefinito chiamato **routes**
+```typescript
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+const routes: Routes = [
+  {path: '', component:}
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+```
+
+Per gestire i componenti e decidere quale fare vedere o no e "falsificare" il cambio pagina tra un componente ad un altro, avremo bisogno di definire gli url dei componenti.
+Con il tag router-outlet definiremo i vari component al loro interno, è una sorta di area di lavoro che distringue i vari componenti.
+Cambiamo i route per permettere ai nostri componenti di apparire in determinati modi
+```typescript
+const routes: Routes = [
+  {path: '', component: HomeComponent},
+  {path: 'about', component: AboutComponent},
+  {path: 'contact', component: ContactComponent},
+
+];
+```
+Per spiegare cosa intendo, nel primo caso avremo "http://localhost:4200" che mostrerà il contenuto del componente home (creato prima con  ng g c components/home ) ma se mettiamo per esempio "http://localhost:4200/about" ci sposteremo e vedremo l'output del componente about (sempre creato prima eh, come avevamo fatto per prova all'inizio).
+
+## Come fare routing con parametri
+Sarebbe avere un url con un altro url al suo interno o per meglio dire un id, che in questo caso sarebbe il parametro. Per aggiungere il parametro a una delle pagine di routing
+Modifichiamo il ifle di routing aggiungendo la possibilità di gestire degli id (nome del parametro a piacere) da parte del nostra pagina contact:
+```typescript
+const routes: Routes = [
+  {path: '', component: HomeComponent},
+  {path: 'contact', component: ContactComponent},
+  {path: 'contact/:id', component: ContactComponent},
+];
+```
+
+Poi aggiungiamo una variabile di tipo ActivatedRoute al componente contact, e usiamo il metodo snapshot seguito da paramap seguito dal nome messo per definire il parametro di contact, cioè id
+
+```typescript
+  ngOnInit(): void
+  {
+    this.persone = this.servizio.getPersone()
+    this.route.snapshot.paramMap.get(':id')
+  }
+```

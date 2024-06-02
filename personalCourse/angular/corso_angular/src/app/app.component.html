@@ -1,12 +1,54 @@
 
+<!--
+	episodio 22/23/24 si aggiunge il routing
+	mettia
+ -->
 
+<a routerLink="/" style="margin-right: 10px;">Home</a>
+<a routerLink="contact" style="margin-right: 10px;">Contacts</a>
+<router-outlet></router-outlet>
+
+
+
+<!--
+	episodio 21
+-->
+
+<!-- <p>Ciao benvenuti al {{title | uppercase}}</p>
+<p>Oggi che giorno è: {{today | date}}</p>
+<p>Oggi che giorno è: {{today | date:'medium'}}</p>
+<p>Oggi che giorno è: {{today | date:'d MMM yyyy - h:mm:ss'}}</p>
+ i valori dei decimali definiscono quante cifre intere ci stano 1
+e quante decimali 1, però il - vicino al numero di decimali definisce
+quante massimo ce ne possono stare (quindi massimo 4 cifre decimali)
+la stessa cosa si può applicare con il numero di cifre per un numero intero
+<p>decimal pipe showcase: {{val | number:'1.1-4'}}</p>
+<p>decimal pipe showcase: {{val | percent:'1.0-4'}}</p>
+<p>decimal pipe showcase: {{val | currency:'EUR':'code'}}</p> -->
+
+
+
+
+<!--
+	episodio 20
+ -->
+
+<!-- <h2>Scegli il colore dell'evidenziatore</h2>
+<div>
+	<input type="radio" name="coloreEvidenziatore" (click)="cambiaColoreEvidenziatore('red')">Rosso
+	<input type="radio" name="coloreEvidenziatore" (click)="cambiaColoreEvidenziatore('pink')">Rosa
+	<input type="radio" name="coloreEvidenziatore" (click)="cambiaColoreEvidenziatore('purple')">Viola
+</div>
+ Inseriamo la direttiva nel tag del paragrafo -->
+<!-- <p [appHighlight]="colore" defaultColor="blue">ciao sono un paragrafo</p>
+ -->
 
 <!--
 	Episodio 19
  -->
-<input #inputSaluti value="valore">
+<!-- <input #inputSaluti value="valore">
 <button (click)="onClickTemp"></button>
-
+ -->
 
 
 <!--
