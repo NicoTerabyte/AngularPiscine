@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { ServiceProvaService } from '../../services/service-prova.service';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-contact',
@@ -8,19 +8,15 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './contact.component.css'
 })
 export class ContactComponent implements OnInit{
+  persona: any
+  id: number
 
-  persone: any
-  isProfile = -1
+  constructor(private route: ActivatedRoute, private servizioProva: ServiceProvaService){}
 
-  constructor(private servizio: ServiceProvaService, private route: ActivatedRoute)
-  {
-
+  ngOnInit(): void {
+      this.route.paramMap.subscribe((params: ParamMap)=>{
+        this.id = +params.get('id')!
+        this.persona = this.servizioProva.getPersona(this.id)
+      })
   }
-  ngOnInit(): void
-  {
-    this.persone = this.servizio.getPersone()
-    this.isProfile = this.route.snapshot.paramMap.get('id') ? -1 : 1
-    this.route.snapshot.paramMap.get('id')
-  }
-
 }

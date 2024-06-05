@@ -1,0 +1,14 @@
+<div>
+	<p style="text-transform: uppercase; margin-top: 15px;">lista contatti</p>
+	<div>
+		<div *ngFor="let persona of persone; index as i">
+			<a routerLink="/contacts/{{i}}"><p>{{persona.nome}} - {{persona.cognome}}</p></a>
+		</div>
+	</div>
+</div>
+<router-outlet></router-outlet>
+
+
+<!-- <ng-template #profiloContatto>
+	<app-contact [persona]="persona"></app-contact>
+</ng-template> -->

@@ -466,7 +466,7 @@ export class AppRoutingModule { }
 ```
 
 Per gestire i componenti e decidere quale fare vedere o no e "falsificare" il cambio pagina tra un componente ad un altro, avremo bisogno di definire gli url dei componenti.
-Con il tag router-outlet definiremo i vari component al loro interno, è una sorta di area di lavoro che distringue i vari componenti.
+Con il tag router-outlet definiremo i vari component al loro interno, è una sorta di area di lavoro che distingue i vari componenti.
 Cambiamo i route per permettere ai nostri componenti di apparire in determinati modi
 ```typescript
 const routes: Routes = [
@@ -498,3 +498,323 @@ Poi aggiungiamo una variabile di tipo ActivatedRoute al componente contact, e us
     this.route.snapshot.paramMap.get(':id')
   }
 ```
+Per prendere l'id assegnato nell'app routing, bisogna prenderlo dal componente.
+Si può usare ng-template sui secondi blocchi usandola per fare un l'else di un *ngIf per essere più chiari guarda il seguente codice dove abbiamo messo una casistica per controllare se l'utente avesse scelto un determinato individuo nella lista contacts presentata in html
+```html
+<div *ngIf="!isProfile; else profiloContatto">
+	<p style="text-transform: uppercase; margin-top: 15px;">lista contatti</p>
+	<div *ngFor="let persona of persone">
+		<p>{{persona.nome}} - {{persona.cognome}}</p>
+	</div>
+</div>
+<ng-template #profiloContatto>
+	<p>Profilo di Carlone</p>
+</ng-template>
+```
+
+Poi per rendere il profilo visibile singolarmente utilizzeremo il router-link classico, ma utilizzeremo una tattica in più precisa, definiremo anche il path del link	, e per entrare nel contatto preciso teniamo conto dell'indice di scorrimento del suddetto (cosa che possiamo fare grazie a ngFor)
+
+```html
+<div *ngIf="!isProfile; else profiloContatto">
+	<p style="text-transform: uppercase; margin-top: 15px;">lista contatti</p>
+	<div *ngFor="let persona of persone; index as i">
+		<a routerLink="/contacts/{{i}}"><p>{{persona.nome}} - {{persona.cognome}}</p></a>
+	</div>
+</div>
+<ng-template #profiloContatto>
+	<p>Profilo di {{persona.nome}} {{persona.cognome}}</p>
+</ng-template>
+
+```
+
+## Routing children per caricare i sottocomponenti
+Vorremmo che tutta la procedura della visione contatti avvenga sulla pagina dei contatti e che un valore figlio a lato della pagina mostri il profilo del contatto scelto.
+Allora la procedura è stata la seguente:
+Abbiamo creato nuovamente un altro componente chiamato contact che usiamo per trasmettere il contatto singolo.
+abbiamo inserito in contact la variabile "persona" che gestirà il contatto che andiamo a prendere dall'altro componente (contacts), gli abbiamo aggiunto il decoratore @Input() per permettere il property binding.
+Abbiamo fatto la stampa in contact.html dell'utente che andiamo a prendere
+e abbiamo chiamato il componente in contacts
+```html
+<div *ngIf="!isProfile; else profiloContatto">
+	<p style="text-transform: uppercase; margin-top: 15px;">lista contatti</p>
+	<div *ngFor="let persona of persone; index as i">
+		<a routerLink="/contacts/{{i}}"><p>{{persona.nome}} - {{persona.cognome}}</p></a>
+	</div>
+</div>
+<ng-template #profiloContatto>
+	//property binding
+	<app-contact [persona]="persona"></app-contact>
+</ng-template>
+
+```
+E questa sarebbe la fase1 la fase due però consisterebbe nel mettere a lato questi profili così li vediamo in tempo reale.
+torniamo al file del routing e aggiungiamo, la proprietà children al componente contacts
+```typescript
+const routes: Routes = [
+  {path: '', component: HomeComponent},
+  {path: 'contacts', component: ContactsComponent, children:[
+	{path: ':id', component: ContactComponent}
+  ]},
+
+];
+```
+children è una proprietà che può contenere un array di path, e li metteremo il vecchio path dell'id tenendo solo l'id come path e togliendo contacts. metteremo anche chi sarebbe il componente figlo, che sarebbe contact al singolare, e voilà adesso ci rimane sistemare il router outlet per trasmettere a schermo le variabili a lato, pare.
+Fun fact se metti il simbolo + davanti ad una variabile la stai **parsando in un intero**
+
+```typescript
+this.id = +this.route.snapshot.paramMap.get('id')!
+```
+
+Il giro del fumo (riassunto)
+Contatti/contacts:
+In contatti prendiamo this.persone e usiamo il servizio per salvare il dato nella variabile persone.
+le mandiamo a schermo con ngFor e mettiamo il router link per collegarlo agli id dei contatti, però questa volta abbiamo messo il router-outlet, questo perché se vogliamo ogni volta in un componente caricare un altro componente dinamico, non sapendo se abbiamo quel componente o qualcos'altro lo mettiamo sopratutto se abbiamo un router-child.
+nel caso base siamo su contatti component, però con il router-outlet ci assicuriamo che se carichiamo un componente dentro ContattiComponent prendiamo quello al suo interno che in questo caso sarebbe Contact/contatto (singolo) che è il figlio.
+Quindi cosa succede nel componente figlo Contact? andiamo a iscrivere/sottoscrivere alla mappa di parametri, quando cambia siamo sul child route per questo siamo obbligati ad iscriverci, e quando facciamo la sottoscrizione andiamo a prendere il nostro parametro e lo riassegniamo.
+
+Da fare:
+* Tocca revisionare delle parti mancanti da sapere
+    * Perché facciamo router link qui?
+```html
+<div>
+	<p style="text-transform: uppercase; margin-top: 15px;">lista contatti</p>
+	<div>
+		<div *ngFor="let persona of persone; index as i">
+			<a routerLink="/contacts/{{i}}"><p>{{persona.nome}} - {{persona.cognome}}</p></a>
+		</div>
+	</div>
+</div>
+<router-outlet></router-outlet>
+```
+Come si collegano i blocchi e per cosa usiamo router-outlet
+RISPOSTA: il routerLink è per capire a cosa ci stiamo collegando quando clicchiamo sulla scritta con il link (quello a cui ci stiamo collegando è semplicemente il link dove troveremo i valori) che poi farà apparire i dati nella zona dov'è presente il router outlet per questo usiamo entrambi 
+* come l'architettura della classe figlio ci permette di rendere così dinamico il routing, per la precisione capire come funziona, il subcribe come ci permette di portare a termine, l'obiettivo di dinamicità? come funziona paramap perché ha subscribe
+* che cazzo succede qui?
+```typescript
+subscribe((params: ParamMap)=>{
+      this.id = +params.get('id')!
+      
+```
+* Aggiungere più dati alle persone
+* Aggiungere con angular material per abbellire il prodotto
+
+
+
+Per essere più concreti con l'analisi cito chatgpt che mi ha aiutato a comprendere meglio i miei dubbi:
+
+Il routing in Angular può sembrare complesso inizialmente, ma una volta capiti i concetti di base, diventa molto potente e flessibile. Vediamo di chiarire i tuoi dubbi passo dopo passo.
+
+### 1. Il File di Routing
+
+Il tuo file di routing definisce le rotte principali dell'applicazione e le rotte figlie. Ecco il codice:
+
+```typescript
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './components/home/home.component';
+import { ContactsComponent } from './components/contacts/contacts.component';
+import { ContactComponent } from './components/contact/contact.component';
+
+const routes: Routes = [
+  {path: '', component: HomeComponent},
+  {path: 'contacts', component: ContactsComponent, children:[
+    {path:':id', component: ContactComponent}
+  ]},
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
+```
+
+### 2. Template HTML del Componente `Contacts`
+
+Ecco il codice del template:
+
+```html
+<div>
+  <p style="text-transform: uppercase; margin-top: 15px;">lista contatti</p>
+  <div>
+    <div *ngFor="let persona of persone; index as i">
+      <a [routerLink]="['/contacts', i]"><p>{{persona.nome}} - {{persona.cognome}}</p></a>
+    </div>
+  </div>
+</div>
+<router-outlet></router-outlet>
+```
+
+#### Spiegazione dei Dubbi
+
+1. **Perché usare `<a [routerLink]="['/contacts', i]">` se abbiamo già `router-outlet`?**
+
+   - Il `routerLink` è utilizzato per creare un link che, quando cliccato, modifica l'URL e naviga verso la rotta specificata.
+   - `router-outlet` è il punto in cui viene caricato il contenuto della rotta corrispondente.
+   - In questo caso, cliccando su uno dei link generati da `routerLink`, l'URL cambia in `/contacts/{id}` e Angular carica dinamicamente il componente `ContactComponent` all'interno di `router-outlet`.
+
+2. **Perché usiamo `router-outlet`? Come crea la magia per collegarci alla pagina figlio?**
+
+   - `router-outlet` è un segnaposto dove i componenti associati alle rotte figlie vengono inseriti.
+   - Quando navighi verso `/contacts/{id}`, Angular riconosce la rotta e carica il componente `ContactComponent` all'interno del `router-outlet` definito nel template del componente `ContactsComponent`.
+
+### 3. Componente Figlio `ContactComponent`
+
+Ecco il codice del componente figlio:
+
+```typescript
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ServiceProvaService } from 'path-to-service-prova-service';
+
+@Component({
+  selector: 'app-contact',
+  templateUrl: './contact.component.html',
+  styleUrl: './contact.component.css'
+})
+export class ContactComponent implements OnInit {
+  persona: any;
+  id: number;
+
+  constructor(private route: ActivatedRoute, private servizioProva: ServiceProvaService) {}
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.id = +params.get('id')!;
+      this.persona = this.servizioProva.getPersona(this.id);
+    });
+  }
+}
+```
+
+#### Spiegazione del Codice
+
+1. **Costruttore e `ngOnInit`**
+
+   - Il costruttore inietta `ActivatedRoute` per ottenere informazioni sulla rotta attiva.
+   - `ngOnInit` è un metodo del ciclo di vita di Angular chiamato una volta che il componente è inizializzato.
+
+2. **Sottoscrizione a `paramMap`**
+
+   ```typescript
+   this.route.paramMap.subscribe((params: ParamMap) => {
+     this.id = +params.get('id')!;
+     this.persona = this.servizioProva.getPersona(this.id);
+   });
+   ```
+
+   - `paramMap` è una mappa dei parametri della rotta attiva. In questo caso, stai ottenendo il parametro `id`.
+   - `+params.get('id')!` è un modo per convertire il parametro `id` da stringa a numero (`+` è l'operatore di coercizione).
+   - `this.persona = this.servizioProva.getPersona(this.id)` chiama un servizio per ottenere i dati della persona con l'ID specificato.
+
+### Miglioramenti e Considerazioni
+
+1. **Utilizzare Parametri Tipizzati**
+
+   Potresti voler utilizzare parametri tipizzati per evitare l'uso di `!` (non-null assertion operator) e rendere il codice più robusto:
+
+   ```typescript
+   this.route.paramMap.subscribe(params => {
+     const id = params.get('id');
+     if (id !== null) {
+       this.id = +id;
+       this.persona = this.servizioProva.getPersona(this.id);
+     }
+   });
+   ```
+
+2. **Verifica delle Rotte**
+
+   Assicurati che il servizio `ServiceProvaService` restituisca correttamente i dati delle persone per evitare errori runtime.
+
+3. **Feedback Utente**
+
+   Aggiungi del feedback per l'utente mentre i dati vengono caricati, ad esempio uno spinner di caricamento.
+
+### Conclusione
+
+- **`routerLink`**: Crea link che aggiornano l'URL e attivano il caricamento dei componenti appropriati tramite `router-outlet`.
+- **`router-outlet`**: Segnaposto per il contenuto delle rotte figlie, caricando dinamicamente i componenti in base all'URL.
+- **Componente Figlio (`ContactComponent`)**: Utilizza `ActivatedRoute` per accedere ai parametri della rotta e caricare i dati appropriati tramite un servizio.
+
+Spero che queste spiegazioni ti aiutino a comprendere meglio il routing in Angular e come collegare dinamicamente i componenti padre e figlio. Se hai ulteriori domande, non esitare a chiedere!
+
+### concetti chiave:
+Il metodo subscribe serve perché monitora i dati in continuazione, se avviene un cambiamento (viene schiacciato un altro dato), subscribe verrà chiamato nuovamente. La funzione come spiegato cambia 	this.id e this.persona ogni volta.
+e paramap pare, una mappa dei parametri della rotta corrente.
+Da quel che ho capito il => viene usato per sostituire delle funzioni anonime a quanto pare, devo capire meglio il concetto.
+Allora ho capito come funziona il =>
+Esso sarebbe una funziona anonima senza nome che fa il suo dovere sul momento, nel contesto di subscribe, questa funzione ha il compito di ritornare a suscribe i valori che vengono cambiati tra parentesi grazie alla freccia (fat arrow viene chiamata).
+per esempio:
+```typescript
+    this.route.paramMap.subscribe((params: ParamMap)=>{
+      this.id = +params.get('id')!
+      this.persona = this.servizioProva.getPersona(this.id)
+    })
+```
+immagina che params venga messo dentro una funzione, infatti lo è vedi le parentesi?
+e che questa funzione sia void infatti non c'è un return, però i valori vengono camviati dinamicamente e rimangono cambiati per poi essere messi in pasto a subscribe, che ancora non capisco che parametri accetta, ma capisco come funziona	. Però sappiamo che i valori, essendo della classe e chiamati con this, vengono aggiornati in tempo reale.
+
+## Redirect ed errori
+è possibile con la modifica del file di routing riuscire a definire un path nel caos l'utente vada i dei path sbagliati con l'url
+
+aggiungiamo il path ai vari path già esistenti nel routing
+```typescript
+const routes: Routes = [
+  {path: '', component: HomeComponent},
+  {path: 'contacts', component: ContactsComponent, children:[
+    {path:':id', component: ContactComponent}
+  ]},
+  {path: '404', component: NotFoundComponent},
+  {path: '**', redirectTo:'/404'}
+];
+```
+Abbiamo creato il componente per dare il messaggio di errore e sotto di esso abbiamo definito il redirect per farlo arrivare alla pagina dove viene segnalato l'errore.
+E piccola nota, il redirect va sempre SOTTO al componente in cui deve essere ridirezzionato, ma più che altro è una caratteristica degli asterischi che non ti permetteranno più di cambiare pagina se lo definisci sopra.
+
+## Proteggere l'accesso alle pagine con routing-guard
+Per utilizzare un file di guarding devi crearlo come i component o i services, solo che devi usare la sua flag per creare il guard:
+ecco il comando da fare:
+```bash
+ng g guard cartellaDoveLoVuoiInserire
+```
+Per dopo: il mio guard non è uguale al suo devo capire perché manca così tanta roba.
+Il problema:
+Perché il mio auth guard è diverso da quello del professore?
+
+A quanto pare le classi authguard sono obsolete e non si usano più sin da angular 15, quindi al posto di usare una classe usiamo una functional guards che sarebbero praticamente funzioni invece che classi, funzionali che farebbero lo stesso compito con meno righe di codice.
+la cosa difficile è comprendere come utilizzare una functional guard al posto di quella class based, quindi
+* capire le functional guards
+* sostituire le class based con le functional
+* fare la lezione 27 con la functional guard
+
+Piccola aggiunta le routing functional guard, sono molto volatili possono essere create così e richiamate dal file di routing pare.
+Abbiamo fino ad ora implementato la routing guard attraverso la functionality del guard, adesso ci manca vedere se riesco ad adattare il video con quello che sto facendo io, visto che il video e outdated. Infatti per passare i dati del service all routing functional guard ho dovuto iniettare in una variabili i dati di sevice
+il mio authGuard:
+```typescript
+export const AuthGuard : CanActivateFn = (route, state) => {
+	const auth = inject(AuthService);
+	const router = inject(Router)
+	if (auth.isLoggedIn)
+	{
+		return true;
+	}
+	router.navigate(['home'])
+	return false;
+};
+
+```
+La vera differenza negli authGuard è anche che la classe può averli tutti in uno, e deve gestirli tutti, invece la functional li gestisce una funzione alla volta.
+è possibile gestire anche i figli di un componente con magari una sicurezza più severa.
+Quindi per farlo nel file di authGuard aggiungiamo pure functional guard per il controllo dei figli
+```typescript
+export const AuthGuardChild: CanActivateChildFn = (route, state) =>{
+	const auth = inject(AuthService);
+	const router = inject(Router)
+	if (auth.isSuperUser())
+		return true;
+	return false;
+}
+```
+In questo caso controllerà se il figlio è superUser prima di vedere i dettagli specifici di un contatto, invece nel caso fosse solo loggato, vedrebbe solamente la lista dei contatti.
+E nulla avendo i servizi e questi controlli possiamo manipolare l'accesso a determinate pagine con i routing guard

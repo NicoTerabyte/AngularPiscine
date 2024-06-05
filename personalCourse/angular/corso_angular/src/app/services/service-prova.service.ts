@@ -5,11 +5,13 @@ import { Injectable } from '@angular/core';
 })
 export class ServiceProvaService {
   persone = [
-    {nome: "Luca", cognome: "Rossi", isOnline: true},
-    {nome: "Maria", cognome: "Verdi", isOnline: false},
-    {nome: "Lorenzo", cognome: "Nicotera", isOnline: true},
-    {nome: "Giuseppe", cognome: "Nicotera", isOnline: false},
-    {nome: "Carlo", cognome: "Pierangeli", isOnline: true},
+    {nome: "Luca", cognome: "Rossi", isOnline: true, descrizione: `none`},
+    {nome: "Maria", cognome: "Verdi", isOnline: false, descrizione: `none`},
+    {nome: "Lorenzo", cognome: "Nicotera", isOnline: true, descrizione: `none`},
+    {nome: "Giuseppe", cognome: "Nicotera", isOnline: false, descrizione: `none`},
+    {nome: "Carlo", cognome: "Pierangeli", isOnline: true, descrizione: `none`},
+    {nome: 'Luca', cognome: 'Chizzo',isOnline: true, descrizione: `Un ragazzo biondo di aymaville
+    sembra sid il bradipo dell'omonimo film di animazione "L'era glaciale"`}
   ]
   constructor() { }
   //qui puoi anche sviluppare dei metodi

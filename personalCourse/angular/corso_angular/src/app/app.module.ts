@@ -14,15 +14,19 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatInputModule} from '@angular/material/input';
 import { HighlightDirective } from './directives/highlight.directive';
 import { ServiceProvaService } from './services/service-prova.service';
-import { ContactComponent } from './components/contact/contact.component';
 import { HomeComponent } from './components/home/home.component';
+import { ContactsComponent } from './components/contacts/contacts.component';
+import { ContactComponent } from './components/contact/contact.component';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HighlightDirective,
+    HomeComponent,
+    ContactsComponent,
     ContactComponent,
-    HomeComponent
+    NotFoundComponent
   ],
   imports: [
     BrowserModule,
